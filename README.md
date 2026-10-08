@@ -81,7 +81,7 @@ To load your own data, pass a `charDataLoader` option, just as in Hanzi Writer.
 
 - Syllable layouts are generated, not hand-tuned. They're clearly legible, but not as refined as a real typeface. For example, the ㄱ in 가 is scaled to fit rather than redrawn to suit the vowel.
 - Stroke width varies between syllables: crowded blocks get thinner strokes.
-- Stroke order follows common teaching practice. Where conventions differ (ㅈ, ㅊ, ㅎ), the variant from [hangeul-stroke-order](https://github.com/MagisterAdamus/hangeul-stroke-order) is used.
+- Stroke order follows common teaching practice. Where conventions differ, ㅈ and ㅊ use the print form (a bar with ㅅ beneath, in 3 and 4 strokes), and ㅎ follows [hangeul-stroke-order](https://github.com/MagisterAdamus/hangeul-stroke-order).
 
 ## Contributing
 

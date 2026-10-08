@@ -1,24 +1,13 @@
 import { buildCharacterData } from './strokeGeometry';
 
-/** ㅊ (chieut, U+314A): 3 strokes. */
+/** ㅊ (chieut, U+314A): 4 strokes, print form: a short top stroke, a bar and ㅅ beneath. */
 export default buildCharacterData([
-  // 1: short top bar, left to right
-  [
-    [430, 810],
-    [600, 810],
-  ],
-  // 2: bar, then falling to the lower left
-  [
-    [220, 650],
-    [770, 650],
-    [600, 480],
-    [420, 290],
-    [190, 60],
-  ],
-  // 3: from the middle of stroke 2, falling to the lower right
-  [
-    [515, 390],
-    [650, 230],
-    [840, 60],
-  ],
+  // 1: short top stroke, left to right
+  [[430, 830], [600, 830]],
+  // 2: bar, left to right
+  [[220, 670], [800, 670]],
+  // 3: from the middle of the bar, falling to the lower left
+  [[512, 670], [470, 540], [390, 370], [290, 210], [180, 60]],
+  // 4: from just below the start of stroke 3, falling to the lower right
+  [[491, 605], [580, 430], [700, 250], [850, 60]],
 ]);

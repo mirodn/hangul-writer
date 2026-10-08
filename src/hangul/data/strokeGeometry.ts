@@ -118,7 +118,7 @@ export function ellipseMedian(
   cy: number,
   rx: number,
   ry: number,
-  { startAngle = 90, sweep = 355, segments = 24 } = {},
+  { startAngle = 90, sweep = 355, segments = 36 } = {},
 ): Median {
   return Array.from({ length: segments + 1 }, (_, i) => {
     const angle = ((startAngle + (sweep * i) / segments) * Math.PI) / 180;
