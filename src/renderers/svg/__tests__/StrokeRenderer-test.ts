@@ -1,9 +1,9 @@
-import yi from 'hanzi-writer-data/一.json';
+import eu from '../../../hangul/data/eu';
 import StrokeRenderer from '../StrokeRenderer';
 import RenderTarget from '../RenderTarget';
 import parseCharData from '../../../parseCharData';
 
-const char = parseCharData('一', yi);
+const char = parseCharData('ㅡ', eu);
 
 describe('StrokeRenderer', () => {
   let target: RenderTarget;

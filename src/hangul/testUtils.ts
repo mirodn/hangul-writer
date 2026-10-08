@@ -1,9 +1,9 @@
 import { Point } from '../typings/types';
 
-// makemeahanzi coordinate space shared by all character data
+// coordinate space shared by all character data (see Positioner)
 export const BOUNDS = { minX: 0, maxX: 1024, minY: -124, maxY: 900 };
 
-/** Flattens an absolute M/L/Q/C/Z path (the makemeahanzi subset) into a polygon. */
+/** Flattens an absolute M/L/Q/C/Z path (the subset used by character data) into a polygon. */
 export const pathToPolygon = (path: string, samples = 16): Point[] => {
   const tokens = path.match(/[MLQCZ]|-?\d+(\.\d+)?/g)!;
   const polygon: Point[] = [];

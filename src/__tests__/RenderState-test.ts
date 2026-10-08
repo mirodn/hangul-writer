@@ -1,9 +1,9 @@
-import ren from 'hanzi-writer-data/人.json';
+import siot from '../hangul/data/siot';
 import Mutation from '../Mutation';
 import RenderState from '../RenderState';
 import parseCharData from '../parseCharData';
 
-const char = parseCharData('人', ren);
+const char = parseCharData('ㅅ', siot);
 const opts = {
   strokeColor: '#555',
   radicalColor: '#123',

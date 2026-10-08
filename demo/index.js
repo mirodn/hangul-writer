@@ -1,3 +1,6 @@
+// jamo offered as suggestions; any syllable (가–힣) can be typed in as well
+var JAMO = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣㄲㄸㅃㅆㅉㅐㅒㅔㅖㅘㅙㅚㅝㅞㅟㅢ';
+
 var writer;
 var isCharVisible;
 var isOutlineVisible;
@@ -58,7 +61,7 @@ function updateCharacter() {
 
 window.onload = function () {
   var suggestions = document.querySelector('#hangul-jamo');
-  Object.keys(HangulWriter.hangulCharData).forEach(function (character) {
+  Array.from(JAMO).forEach(function (character) {
     suggestions.appendChild(new Option(character));
   });
   var requested = decodeURIComponent(window.location.hash.slice(1));

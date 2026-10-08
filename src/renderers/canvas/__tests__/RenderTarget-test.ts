@@ -23,6 +23,6 @@ describe('RenderTarget', () => {
     document.body.innerHTML = '<canvas id="target"></canvas>';
     expect(() => {
       RenderTarget.init('wrong-target', '200px', '120px');
-    }).toThrow('HanziWriter target element not found: wrong-target');
+    }).toThrow('HangulWriter target element not found: wrong-target');
   });
 });

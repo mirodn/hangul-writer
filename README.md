@@ -1,37 +1,114 @@
-
-Hanzi Writer
+Hangul Writer
 =====================
 
-[![CircleCI](https://img.shields.io/circleci/project/github/chanind/hanzi-writer/master.svg)](https://circleci.com/gh/chanind/hanzi-writer/tree/master)
-[![Codecov](https://img.shields.io/codecov/c/github/chanind/hanzi-writer/master.svg)](https://codecov.io/gh/chanind/hanzi-writer)
-[![npm](https://img.shields.io/npm/v/hanzi-writer.svg)](https://www.npmjs.com/package/hanzi-writer)
+[![CI](https://github.com/mirodn/hangul-writer/actions/workflows/ci.yml/badge.svg)](https://github.com/mirodn/hangul-writer/actions/workflows/ci.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/mirodn/hangul-writer/master.svg)](https://codecov.io/gh/mirodn/hangul-writer)
+[![npm](https://img.shields.io/npm/v/hangul-writer.svg)](https://www.npmjs.com/package/hangul-writer)
 
-https://chanind.github.io/hanzi-writer
+Hangul Writer is a free and open-source JavaScript library for Korean Hangul stroke order animations and handwriting practice quizzes. Learners draw a character stroke by stroke and get immediate feedback on each stroke, including wrong stroke order and strokes drawn in the wrong direction.
 
-Hanzi Writer is a free and open-source javascript library for Chinese character stroke order animations and stroke order practice quizzes. Works with both simplified and traditional characters.
+It supports all 51 Hangul jamo and all 11,172 precomposed syllables (가–힣). It's a fork of [Hanzi Writer](https://github.com/chanind/hanzi-writer), and reuses its animation, rendering and stroke recognition engine.
 
-[Live demo](https://chanind.github.io/hanzi-writer/demo.html)
+## Demo
 
-## Getting Started and Documentation
-
-For more info and instructions on getting started check out https://chanind.github.io/hanzi-writer
-
-## Data source
-
-The chinese character svg and stroke order data used by Hanzi Writer is derived from the [Make me a Hanzi](https://github.com/skishore/makemeahanzi) project with some slight tweaks. The data can be found in the [Hanzi Writer Data](https://github.com/chanind/hanzi-writer-data) repo. There's a visualizer for this data [here](https://chanind.github.io/hanzi-writer-data).
-
-## Contributing
-
-Pull requests are welcome! If you would like to contribute code, you'll need to be able to build the project locally. After cloning the Hanzi Writer repo, you can get it set up by running:
+Build the library, then open `demo/index.html` in a browser:
 
 ```
 yarn install
+yarn build
+open demo/index.html
 ```
 
-You can run tests with `yarn test` and you can build the project with `yarn build`.
+Type any jamo or syllable into the input to animate it or practise writing it.
+
+## Usage
+
+```js
+import HangulWriter from 'hangul-writer';
+
+const writer = HangulWriter.create('target', '한', {
+  width: 300,
+  height: 300,
+  padding: 10,
+});
+
+// play the stroke order animation
+writer.animateCharacter();
+
+// or let the user draw the character
+writer.quiz({
+  onCorrectStroke: (data) => console.log(`Stroke ${data.strokeNum + 1} correct`),
+  onMistake: (data) => console.log(data.isBackwards ? 'Wrong direction' : 'Try again'),
+  onComplete: (summary) => console.log(`Done with ${summary.totalMistakes} mistakes`),
+});
+```
+
+Without a bundler, include `dist/hangul-writer.min.js` with a `<script>` tag; it defines a global `HangulWriter`.
+
+The API is the same as Hanzi Writer's, so its [documentation](https://chanind.github.io/hanzi-writer) applies; read `HanziWriter` as `HangulWriter`. Character data is bundled, so no network requests are made.
+
+## Supported characters
+
+| Group | Characters |
+|---|---|
+| Basic consonants | ㄱ ㄴ ㄷ ㄹ ㅁ ㅂ ㅅ ㅇ ㅈ ㅊ ㅋ ㅌ ㅍ ㅎ |
+| Basic vowels | ㅏ ㅑ ㅓ ㅕ ㅗ ㅛ ㅜ ㅠ ㅡ ㅣ |
+| Double consonants | ㄲ ㄸ ㅃ ㅆ ㅉ |
+| Compound vowels | ㅐ ㅒ ㅔ ㅖ ㅘ ㅙ ㅚ ㅝ ㅞ ㅟ ㅢ |
+| Consonant clusters | ㄳ ㄵ ㄶ ㄺ ㄻ ㄼ ㄽ ㄾ ㄿ ㅀ ㅄ |
+| Syllables | all 11,172 from 가 to 힣, composed automatically |
+
+Jamo use the Hangul Compatibility Jamo block (U+3130–U+318F), which is what Korean keyboards produce.
+
+## How the character data works
+
+Each character is a list of strokes in writing order. Every stroke has an SVG outline, used for rendering, and a median: its centreline, used for animation and stroke recognition. Coordinates live in a 1024-unit box (x 0 to 1024, y −124 to 900) with the y axis pointing up.
+
+- **Jamo** (`src/hangul/data/`) are authored as medians only. `buildCharacterData` generates outlines of even width from them. Double consonants and clusters are built from the single consonants, so changing ㄱ also changes ㄲ and ㄳ.
+- **Syllables** (`src/hangul/syllable.ts`) are split into initial, vowel and optional final, and those jamo are fitted into a block layout chosen by the vowel's shape: the initial goes to the left of the vowel (가), above it (고), or above and to the left (과), with the final below (각). Stroke order follows the standard order: initial, vowel, final.
+
+To load your own data, pass a `charDataLoader` option, just as in Hanzi Writer.
+
+### Adding or adjusting a jamo
+
+1. Create or edit the jamo's module in `src/hangul/data/`, listing each stroke's median in writing order.
+2. Register it in `src/hangul/data/index.ts`.
+3. Run `yarn test`. Every stroke of every jamo is checked automatically: it must be recognised when drawn correctly or a little imprecisely, flagged when drawn backwards, and not confused with the character's other strokes.
+
+## Limitations
+
+- Syllable layouts are generated, not hand-tuned. They're clearly legible, but not as refined as a real typeface. For example, the ㄱ in 가 is scaled to fit rather than redrawn to suit the vowel.
+- Stroke width varies between syllables: crowded blocks get thinner strokes.
+- Stroke order follows common teaching practice. Where conventions differ (ㅈ, ㅊ, ㅎ), the variant from [hangeul-stroke-order](https://github.com/MagisterAdamus/hangeul-stroke-order) is used.
+
+## Contributing
+
+Pull requests are welcome. This project uses [Yarn 1](https://classic.yarnpkg.com/) (`npx yarn@1` works if it isn't installed):
+
+```
+yarn install
+yarn test        # run tests
+yarn build       # build into dist/
+yarn lint-test   # lint
+yarn typecheck   # type-check
+```
+
+## Releasing
+
+Releases are automated with [semantic-release](https://github.com/semantic-release/semantic-release) and published to npm through [Trusted Publishing](https://docs.npmjs.com/trusted-publishers), so no npm token is stored anywhere. Every push to `master` that passes CI is released, and commit messages decide the version:
+
+| Commit | Release |
+|---|---|
+| `fix: …` | patch (1.0.0 → 1.0.1) |
+| `feat: …` | minor (1.0.0 → 1.1.0) |
+| `feat!: …` or a `BREAKING CHANGE:` footer | major (1.0.0 → 2.0.0) |
+
+Other types, such as `docs:`, `ci:` or `chore:`, don't trigger a release.
+
+Publishing needs a trusted publisher for this repository and the `ci.yml` workflow, set up in the package's settings on npmjs.com. It also needs the repository variable `RELEASE_ENABLED` set to `true` under Settings → Secrets and variables → Actions → Variables.
 
 ## License
 
-Hanzi Writer is released under an [MIT](https://raw.githubusercontent.com/chanind/hanzi-writer/master/LICENSE) license.
+Hangul Writer is released under the [MIT](LICENSE) license.
 
-The Hanzi Writer data comes from the [Make Me A Hanzi](https://github.com/skishore/makemeahanzi) project, which extracted the data from fonts by [Arphic Technology](http://www.arphic.com/), a Taiwanese font forge that released their work under a permissive license in 1999. You can redistribute and/or modify this data under the terms of the Arphic Public License as published by Arphic Technology Co., Ltd. A copy of this license can be found in [ARPHICPL.TXT](https://raw.githubusercontent.com/chanind/hanzi-writer-data/master/ARPHICPL.TXT).
+It's based on [Hanzi Writer](https://github.com/chanind/hanzi-writer) by David Chanin, also MIT licensed. All Hangul character data in this repository was created for this project. Stroke orders were cross-checked against [hangeul-stroke-order](https://github.com/MagisterAdamus/hangeul-stroke-order) by Adam Stone (CC BY-SA 4.0); none of its images or shapes are included.

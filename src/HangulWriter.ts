@@ -9,9 +9,9 @@ import LoadingManager from './LoadingManager';
 import * as characterActions from './characterActions';
 import { trim, colorStringToVals, selectIndex, fixIndex } from './utils';
 import Character from './models/Character';
-import HanziWriterRendererBase, {
-  HanziWriterRendererConstructor,
-} from './renderers/HanziWriterRendererBase';
+import HangulWriterRendererBase, {
+  HangulWriterRendererConstructor,
+} from './renderers/HangulWriterRendererBase';
 import RenderTargetBase from './renderers/RenderTargetBase';
 import { GenericMutation } from './Mutation';
 
@@ -19,10 +19,10 @@ import { GenericMutation } from './Mutation';
 import {
   ColorOptions,
   DimensionOptions,
-  HanziWriterOptions,
+  HangulWriterOptions,
   LoadingManagerOptions,
   OnCompleteFunction,
-  ParsedHanziWriterOptions,
+  ParsedHangulWriterOptions,
   QuizOptions,
   RenderTargetInitFunction,
 } from './typings/types';
@@ -30,8 +30,8 @@ import {
 // Export type interfaces
 export * from './typings/types';
 
-export default class HanziWriter {
-  _options: ParsedHanziWriterOptions;
+export default class HangulWriter {
+  _options: ParsedHangulWriterOptions;
   _loadingManager: LoadingManager;
   /** Only set when calling .setCharacter() */
   _char: string | undefined;
@@ -42,13 +42,13 @@ export default class HanziWriter {
   /** Only set when calling .setCharacter() */
   _positioner: Positioner | undefined;
   /** Only set when calling .setCharacter() */
-  _hanziWriterRenderer: HanziWriterRendererBase<HTMLElement, any> | null | undefined;
+  _hangulWriterRenderer: HangulWriterRendererBase<HTMLElement, any> | null | undefined;
   /** Only set when calling .setCharacter() */
   _withDataPromise: Promise<void> | undefined;
 
   _quiz: Quiz | undefined;
   _renderer: {
-    HanziWriterRenderer: HanziWriterRendererConstructor;
+    HangulWriterRenderer: HangulWriterRendererConstructor;
     createRenderTarget: RenderTargetInitFunction<any>;
   };
 
@@ -58,9 +58,9 @@ export default class HanziWriter {
   static create(
     element: string | HTMLElement,
     character: string,
-    options?: Partial<HanziWriterOptions>,
+    options?: Partial<HangulWriterOptions>,
   ) {
-    const writer = new HanziWriter(element, options);
+    const writer = new HangulWriter(element, options);
     writer.setCharacter(character);
 
     return writer;
@@ -69,22 +69,22 @@ export default class HanziWriter {
   /** Singleton instance of LoadingManager. Only set in `loadCharacterData` */
   static _loadingManager: LoadingManager | null = null;
   /** Singleton loading options. Only set in `loadCharacterData` */
-  static _loadingOptions: Partial<HanziWriterOptions> | null = null;
+  static _loadingOptions: Partial<HangulWriterOptions> | null = null;
 
   static loadCharacterData(
     character: string,
     options: Partial<LoadingManagerOptions> = {},
   ) {
     const loadingManager = (() => {
-      const { _loadingManager, _loadingOptions } = HanziWriter;
+      const { _loadingManager, _loadingOptions } = HangulWriter;
       if (_loadingManager?._loadingChar === character && _loadingOptions === options) {
         return _loadingManager;
       }
       return new LoadingManager({ ...defaultOptions, ...options });
     })();
 
-    HanziWriter._loadingManager = loadingManager;
-    HanziWriter._loadingOptions = options;
+    HangulWriter._loadingManager = loadingManager;
+    HangulWriter._loadingOptions = options;
     return loadingManager.loadCharData(character);
   }
 
@@ -101,13 +101,13 @@ export default class HanziWriter {
     };
   }
 
-  constructor(element: string | HTMLElement, options: Partial<HanziWriterOptions> = {}) {
-    const { HanziWriterRenderer, createRenderTarget } =
+  constructor(element: string | HTMLElement, options: Partial<HangulWriterOptions> = {}) {
+    const { HangulWriterRenderer, createRenderTarget } =
       options.renderer === 'canvas' ? canvasRenderer : svgRenderer;
     const rendererOverride = options.rendererOverride || {};
 
     this._renderer = {
-      HanziWriterRenderer: rendererOverride.HanziWriterRenderer || HanziWriterRenderer,
+      HangulWriterRenderer: rendererOverride.HangulWriterRenderer || HangulWriterRenderer,
       createRenderTarget: rendererOverride.createRenderTarget || createRenderTarget,
     };
     // wechat miniprogram component needs direct access to the render target, so this is public
@@ -333,16 +333,18 @@ export default class HanziWriter {
     if (
       this._character &&
       this._renderState &&
-      this._hanziWriterRenderer &&
+      this._hangulWriterRenderer &&
       this._positioner
     ) {
-      this._hanziWriterRenderer.destroy();
-      const hanziWriterRenderer = this._initAndMountHanziWriterRenderer(this._character);
+      this._hangulWriterRenderer.destroy();
+      const hangulWriterRenderer = this._initAndMountHangulWriterRenderer(
+        this._character,
+      );
       // TODO: this should probably implement EventEmitter instead of manually tracking updates like this
       this._renderState.overwriteOnStateChange((nextState) =>
-        hanziWriterRenderer.render(nextState),
+        hangulWriterRenderer.render(nextState),
       );
-      hanziWriterRenderer.render(this._renderState.state);
+      hangulWriterRenderer.render(this._renderState.state);
       // update the current quiz as well, if one is active
       if (this._quiz) {
         this._quiz.setPositioner(this._positioner);
@@ -421,13 +423,13 @@ export default class HanziWriter {
   setCharacter(char: string) {
     this.cancelQuiz();
     this._char = char;
-    if (this._hanziWriterRenderer) {
-      this._hanziWriterRenderer.destroy();
+    if (this._hangulWriterRenderer) {
+      this._hangulWriterRenderer.destroy();
     }
     if (this._renderState) {
       this._renderState.cancelAll();
     }
-    this._hanziWriterRenderer = null;
+    this._hangulWriterRenderer = null;
     this._withDataPromise = this._loadingManager
       .loadCharData(char)
       .then((pathStrings) => {
@@ -438,27 +440,27 @@ export default class HanziWriter {
 
         this._character = parseCharData(char, pathStrings);
         this._renderState = new RenderState(this._character, this._options, (nextState) =>
-          hanziWriterRenderer.render(nextState),
+          hangulWriterRenderer.render(nextState),
         );
 
-        const hanziWriterRenderer = this._initAndMountHanziWriterRenderer(
+        const hangulWriterRenderer = this._initAndMountHangulWriterRenderer(
           this._character,
         );
-        hanziWriterRenderer.render(this._renderState.state);
+        hangulWriterRenderer.render(this._renderState.state);
       });
     return this._withDataPromise;
   }
 
-  _initAndMountHanziWriterRenderer(character: Character) {
+  _initAndMountHangulWriterRenderer(character: Character) {
     const { width, height, padding } = this._options;
     this._positioner = new Positioner({ width, height, padding });
-    const hanziWriterRenderer = new this._renderer.HanziWriterRenderer(
+    const hangulWriterRenderer = new this._renderer.HangulWriterRenderer(
       character,
       this._positioner,
     );
-    hanziWriterRenderer.mount(this.target);
-    this._hanziWriterRenderer = hanziWriterRenderer;
-    return hanziWriterRenderer;
+    hangulWriterRenderer.mount(this.target);
+    this._hangulWriterRenderer = hangulWriterRenderer;
+    return hangulWriterRenderer;
   }
 
   async getCharacterData(): Promise<Character> {
@@ -469,7 +471,7 @@ export default class HanziWriter {
     return character!;
   }
 
-  _assignOptions(options: Partial<HanziWriterOptions>): ParsedHanziWriterOptions {
+  _assignOptions(options: Partial<HangulWriterOptions>): ParsedHangulWriterOptions {
     const mergedOptions = {
       ...defaultOptions,
       ...options,
@@ -491,7 +493,7 @@ export default class HanziWriter {
   }
 
   /** returns a new options object with width and height filled in if missing */
-  _fillWidthAndHeight(options: HanziWriterOptions): ParsedHanziWriterOptions {
+  _fillWidthAndHeight(options: HangulWriterOptions): ParsedHangulWriterOptions {
     const filledOpts = { ...options };
     if (filledOpts.width && !filledOpts.height) {
       filledOpts.height = filledOpts.width;
@@ -503,7 +505,7 @@ export default class HanziWriter {
       filledOpts.width = minDim;
       filledOpts.height = minDim;
     }
-    return filledOpts as ParsedHanziWriterOptions;
+    return filledOpts as ParsedHangulWriterOptions;
   }
 
   _withData<T>(func: () => T) {

@@ -1,8 +1,8 @@
-import ren from 'hanzi-writer-data/人.json';
+import siot from '../../../hangul/data/siot';
 import CharacterRenderer from '../CharacterRenderer';
 import parseCharData from '../../../parseCharData';
 
-const char = parseCharData('人', ren);
+const char = parseCharData('ㅅ', siot);
 
 describe('CharacterRenderer', () => {
   let ctx;

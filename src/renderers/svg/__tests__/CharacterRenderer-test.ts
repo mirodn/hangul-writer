@@ -1,10 +1,10 @@
-import ren from 'hanzi-writer-data/人.json';
+import siot from '../../../hangul/data/siot';
 import CharacterRenderer from '../CharacterRenderer';
 import RenderTarget from '../RenderTarget';
 import { copyAndMergeDeep } from '../../../utils';
 import parseCharData from '../../../parseCharData';
 
-const char = parseCharData('人', ren);
+const char = parseCharData('ㅅ', siot);
 
 describe('CharacterRenderer', () => {
   let target;
@@ -39,7 +39,7 @@ describe('CharacterRenderer', () => {
     const subCanvas = target.svg.childNodes[1];
     expect(subCanvas.nodeName).toBe('g');
     expect(subCanvas.style.opacity).toBe('0.7');
-    // 2 strokes of 人
+    // 2 strokes of ㅅ
     expect(subCanvas.childNodes.length).toBe(2);
     subCanvas.childNodes.forEach((node) => {
       expect(node.nodeName).toBe('path');
@@ -78,7 +78,7 @@ describe('CharacterRenderer', () => {
     const subCanvas = target.svg.childNodes[1];
     expect(subCanvas.nodeName).toBe('g');
     expect(subCanvas.style.opacity).toBe('0.9');
-    // 2 strokes of 人
+    // 2 strokes of ㅅ
     expect(subCanvas.childNodes.length).toBe(2);
     subCanvas.childNodes.forEach((node) => {
       expect(node.nodeName).toBe('path');

@@ -14,7 +14,8 @@ export const drawPath = (ctx: CanvasRenderingContext2D, points: Point[]) => {
 /**
  * Break a path string into a series of canvas path commands
  *
- * Note: only works with the subset of SVG paths used by MakeMeAHanzi data
+ * Note: only works with the subset of SVG paths used by the character data
+ * (absolute M, L, Q, C and Z commands)
  * @param pathString
  */
 export const pathStringToCanvas = (pathString: string) => {

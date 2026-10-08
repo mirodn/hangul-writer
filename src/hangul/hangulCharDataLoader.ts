@@ -3,8 +3,8 @@ import hangulCharData from './data';
 import { composeSyllable } from './syllable';
 
 /**
- * A `charDataLoader` that serves bundled jamo data and composes syllables (가–힣) on demand,
- * instead of fetching from the Hanzi CDN. Drop-in compatible with HanziWriter's option.
+ * Serves bundled jamo data and composes syllables (가–힣) on demand.
+ * This is the default `charDataLoader`; pass your own to load other data.
  */
 const hangulCharDataLoader: CharDataLoaderFn = (char, onLoad, onError) => {
   const data = hangulCharData[char] || composeSyllable(char);

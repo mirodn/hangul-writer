@@ -3,7 +3,7 @@ import Positioner from '../Positioner';
 import { RenderStateObject } from '../RenderState';
 import RenderTargetBase from './RenderTargetBase';
 
-export default interface HanziWriterRendererBase<
+export default interface HangulWriterRendererBase<
   TElementType extends HTMLElement | HTMLCanvasElement | SVGElement | SVGSVGElement,
   TRenderTarget extends RenderTargetBase<TElementType>
 > {
@@ -17,6 +17,6 @@ export default interface HanziWriterRendererBase<
   destroy(): void;
 }
 
-export interface HanziWriterRendererConstructor {
-  new (character: Character, positioner: Positioner): HanziWriterRendererBase<any, any>;
+export interface HangulWriterRendererConstructor {
+  new (character: Character, positioner: Positioner): HangulWriterRendererBase<any, any>;
 }

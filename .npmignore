@@ -5,9 +5,9 @@ coverage/
 data/
 _site/
 dist/data/
-!dist/hanzi-writer.min.js
+!dist/hangul-writer.min.js
 vendor/
-.circleci
+.github
 .codecov.yml
 .vscode
 .sass-cache

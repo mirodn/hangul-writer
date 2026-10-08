@@ -8,25 +8,9 @@ import filesize from 'rollup-plugin-filesize';
 
 const extensions = ['.js', '.ts'];
 
-const createPlugins = () => [
-  filesize(),
-  ts({
-    transpiler: 'babel',
-  }),
-  resolve({ extensions }),
-  babel({
-    exclude: 'node_modules/**',
-    extensions,
-    babelHelpers: 'bundled',
-  }),
-  license({
-    banner: `Hanzi Writer v<%= pkg.version %> | https://chanind.github.io/hanzi-writer`,
-  }),
-];
-
 export default [
   {
-    input: 'src/HanziWriter.ts',
+    input: 'src/HangulWriter.ts',
     output: [
       {
         file: pkg.main,
@@ -35,17 +19,17 @@ export default [
         exports: 'auto',
       },
       {
-        file: 'dist/hanzi-writer.min.js',
+        file: 'dist/hangul-writer.min.js',
         format: 'iife',
-        name: 'HanziWriter',
+        name: 'HangulWriter',
         sourcemap: true,
         plugins: [terser()],
         exports: 'default',
       },
       {
-        file: 'dist/hanzi-writer.js',
+        file: 'dist/hangul-writer.js',
         format: 'iife',
-        name: 'HanziWriter',
+        name: 'HangulWriter',
         exports: 'default',
       },
       {
@@ -55,17 +39,20 @@ export default [
         exports: 'default',
       },
     ],
-    plugins: createPlugins(),
-  },
-  {
-    // Hangul Writer: HanziWriter preconfigured with bundled Hangul character data
-    input: 'src/hangul/index.ts',
-    output: {
-      file: 'dist/hangul-writer.js',
-      format: 'iife',
-      name: 'HangulWriter',
-      exports: 'named',
-    },
-    plugins: createPlugins(),
+    plugins: [
+      filesize(),
+      ts({
+        transpiler: 'babel',
+      }),
+      resolve({ extensions }),
+      babel({
+        exclude: 'node_modules/**',
+        extensions,
+        babelHelpers: 'bundled',
+      }),
+      license({
+        banner: `Hangul Writer v<%= pkg.version %> | https://github.com/mirodn/hangul-writer`,
+      }),
+    ],
   },
 ];

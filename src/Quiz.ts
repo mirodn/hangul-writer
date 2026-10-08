@@ -6,7 +6,7 @@ import * as quizActions from './quizActions';
 import * as geometry from './geometry';
 import * as characterActions from './characterActions';
 import Character from './models/Character';
-import { ParsedHanziWriterOptions, Point, StrokeData } from './typings/types';
+import { ParsedHangulWriterOptions, Point, StrokeData } from './typings/types';
 import RenderState from './RenderState';
 import { GenericMutation } from './Mutation';
 
@@ -22,7 +22,7 @@ export default class Quiz {
   _positioner: Positioner;
 
   /** Set on startQuiz */
-  _options: ParsedHanziWriterOptions | undefined;
+  _options: ParsedHangulWriterOptions | undefined;
   _currentStrokeIndex = 0;
   _mistakesOnStroke = 0;
   _totalMistakes = 0;
@@ -36,7 +36,7 @@ export default class Quiz {
     this._positioner = positioner;
   }
 
-  startQuiz(options: ParsedHanziWriterOptions) {
+  startQuiz(options: ParsedHangulWriterOptions) {
     if (this._userStrokesIds) {
       this._renderState.run(
         quizActions.removeAllUserStrokes( this._userStrokesIds ),

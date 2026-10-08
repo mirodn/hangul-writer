@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="ko">
 	<head>
 		<meta charset="utf-8">
-		<title>Hanzi Writer</title>
-		<!-- <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'> -->
+		<title>Hangul Writer</title>
 		<link rel="stylesheet" href="styles.css" />
-		<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 	</head>
 	<body>
 
-		<h1 class="title">Hanzi Writer</h1>
+		<h1 class="title">Hangul Writer</h1>
 		<form class="js-char-form char-form">
 			<label>
 				Character
-				<input type="text" class="js-char char-input" size="1" maxlength="1" value="我" />
+				<input type="text" class="js-char char-input" size="1" maxlength="1" value="ㄱ" list="hangul-jamo" />
 			</label>
+			<datalist id="hangul-jamo"></datalist>
 			<button type="submit">Update</button>
 		</form>
 		<div class="actions">
@@ -24,13 +23,12 @@
 			<button class="js-quiz">Quiz yourself</button>
 		</div>
 
-		<div id="target">
+		<div id="target"></div>
 
-		</div>
+		<p class="js-feedback" aria-live="polite"></p>
 
-		<!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script> -->
-		<script type="application/javascript" src="../dist/hanzi-writer.js"></script>
-		<script type="application/javascript" src="test.js"></script>
+		<script type="application/javascript" src="../dist/hangul-writer.js"></script>
+		<script type="application/javascript" src="index.js"></script>
 
 	</body>
 </html>

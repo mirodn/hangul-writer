@@ -1,18 +1,24 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
-title: "Hanzi Writer"
+title: "Hangul Writer"
 authors:
-  - family-names: "Chanin"
-    given-names: "David"
-    orcid: "https://orcid.org/0009-0004-6619-5469"
-repository-code: "https://github.com/chanind/hanzi-writer"
-abstract: "Hanzi Writer is a JavaScript library for Chinese character stroke order animations and practice quizzes"
+  - name: "Miro"
+repository-code: "https://github.com/mirodn/hangul-writer"
+abstract: "Hangul Writer is a JavaScript library for Korean Hangul stroke order animations and handwriting practice quizzes, based on Hanzi Writer."
 keywords:
-  - chinese
-  - hanzi
+  - hangul
+  - korean
   - javascript
   - stroke-order
   - animation
 license: MIT
-date-released: 2015-11-27
+references:
+  - type: software
+    title: "Hanzi Writer"
+    authors:
+      - family-names: "Chanin"
+        given-names: "David"
+        orcid: "https://orcid.org/0009-0004-6619-5469"
+    repository-code: "https://github.com/chanind/hanzi-writer"
+    license: MIT

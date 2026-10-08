@@ -1,5 +1,5 @@
-import ren from 'hanzi-writer-data/人.json';
-import ta from 'hanzi-writer-data/他.json';
+import siot from '../hangul/data/siot';
+import hieut from '../hangul/data/hieut';
 import LoadingManager from '../LoadingManager';
 
 describe('LoadingManager', () => {
@@ -7,54 +7,54 @@ describe('LoadingManager', () => {
     it('resolves when data is loaded via async callback', async () => {
       const manager = new LoadingManager({
         charDataLoader: (_char, onComplete) => {
-          setTimeout(() => onComplete(ren), 1);
+          setTimeout(() => onComplete(siot), 1);
         },
       });
-      const data = await manager.loadCharData('人');
-      expect(data).toBe(ren);
+      const data = await manager.loadCharData('ㅅ');
+      expect(data).toBe(siot);
       expect(manager.loadingFailed).toBe(false);
     });
 
     it('resolves when data is loaded via sync callback', async () => {
       const manager = new LoadingManager({
         charDataLoader: (_char, onComplete) => {
-          onComplete(ren);
+          onComplete(siot);
         },
       });
-      const data = await manager.loadCharData('人');
-      expect(data).toBe(ren);
+      const data = await manager.loadCharData('ㅅ');
+      expect(data).toBe(siot);
       expect(manager.loadingFailed).toBe(false);
     });
 
     it('resolves when data is loaded via promise', async () => {
       const manager = new LoadingManager({
-        charDataLoader: () => Promise.resolve(ren),
+        charDataLoader: () => Promise.resolve(siot),
       });
-      const data = await manager.loadCharData('人');
-      expect(data).toBe(ren);
+      const data = await manager.loadCharData('ㅅ');
+      expect(data).toBe(siot);
       expect(manager.loadingFailed).toBe(false);
     });
 
     it('resolves when data is loaded via sync return', async () => {
       const manager = new LoadingManager({
-        charDataLoader: () => ren,
+        charDataLoader: () => siot,
       });
-      const data = await manager.loadCharData('人');
-      expect(data).toBe(ren);
+      const data = await manager.loadCharData('ㅅ');
+      expect(data).toBe(siot);
       expect(manager.loadingFailed).toBe(false);
     });
 
     it('passes data to onLoadCharDataSuccess if provided', async () => {
       let successVal;
       const manager = new LoadingManager({
-        charDataLoader: () => ren,
+        charDataLoader: () => siot,
         onLoadCharDataSuccess: (returnedData) => {
           successVal = returnedData;
         },
       });
-      const data = await manager.loadCharData('人');
-      expect(data).toBe(ren);
-      expect(successVal).toBe(ren);
+      const data = await manager.loadCharData('ㅅ');
+      expect(data).toBe(siot);
+      expect(successVal).toBe(siot);
       expect(manager.loadingFailed).toBe(false);
     });
 
@@ -64,8 +64,8 @@ describe('LoadingManager', () => {
           onErr('OMG');
         },
       });
-      await expect(manager.loadCharData('人')).rejects.toThrow(
-        new Error('Failed to load char data for 人'),
+      await expect(manager.loadCharData('ㅅ')).rejects.toThrow(
+        new Error('Failed to load char data for ㅅ'),
       );
       expect(manager.loadingFailed).toBe(true);
     });
@@ -76,7 +76,7 @@ describe('LoadingManager', () => {
           onErr(new Error('OMG'));
         },
       });
-      await expect(manager.loadCharData('人')).rejects.toThrow(new Error('OMG'));
+      await expect(manager.loadCharData('ㅅ')).rejects.toThrow(new Error('OMG'));
       expect(manager.loadingFailed).toBe(true);
     });
 
@@ -90,7 +90,7 @@ describe('LoadingManager', () => {
           failureReason = reason;
         },
       });
-      const data = await manager.loadCharData('人');
+      const data = await manager.loadCharData('ㅅ');
       expect(manager.loadingFailed).toBe(true);
       expect(data).toBe(undefined);
       expect(failureReason).toBe('everything is terrible');
@@ -106,8 +106,8 @@ describe('LoadingManager', () => {
         },
       });
 
-      const loadPromise1 = manager.loadCharData('人');
-      const loadPromise2 = manager.loadCharData('他');
+      const loadPromise1 = manager.loadCharData('ㅅ');
+      const loadPromise2 = manager.loadCharData('ㅎ');
       expect(loadPromise1).not.toBe(loadPromise2);
 
       let hasPromise1Resolved = false;
@@ -115,17 +115,17 @@ describe('LoadingManager', () => {
         hasPromise1Resolved = true;
       });
 
-      onCompleteFns[0].call(null, ren);
-      onCompleteFns[1].call(null, ta);
+      onCompleteFns[0].call(null, siot);
+      onCompleteFns[1].call(null, hieut);
 
       const data = await loadPromise2;
 
-      // ren should not resolve, since we requested something else before it finished loading
+      // siot should not resolve, since we requested something else before it finished loading
       expect(hasPromise1Resolved).toBe(false);
 
-      expect(data).toBe(ta);
+      expect(data).toBe(hieut);
       expect(onLoadCharDataSuccess.mock.calls.length).toBe(1);
-      expect(onLoadCharDataSuccess.mock.calls[0][0]).toBe(ta);
+      expect(onLoadCharDataSuccess.mock.calls[0][0]).toBe(hieut);
       expect(manager.loadingFailed).toBe(false);
     });
   });

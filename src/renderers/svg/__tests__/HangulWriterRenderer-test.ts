@@ -1,19 +1,19 @@
-import ren from 'hanzi-writer-data/人.json';
-import HanziWriterRenderer from '../HanziWriterRenderer';
+import siot from '../../../hangul/data/siot';
+import HangulWriterRenderer from '../HangulWriterRenderer';
 import RenderTarget from '../RenderTarget';
 import { copyAndMergeDeep } from '../../../utils';
 import Positioner from '../../../Positioner';
 import parseCharData from '../../../parseCharData';
 import { RenderStateObject } from '../../../RenderState';
 
-const char = parseCharData('人', ren);
+const char = parseCharData('ㅅ', siot);
 const positioner = new Positioner({
   width: 100,
   height: 100,
   padding: 10,
 });
 
-describe('HanziWriterRenderer', () => {
+describe('HangulWriterRenderer', () => {
   let target: RenderTarget;
 
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe('HanziWriterRenderer', () => {
 
     const props2 = copyAndMergeDeep(props1, { userStrokes: null });
 
-    const renderer = new HanziWriterRenderer(char, positioner);
+    const renderer = new HangulWriterRenderer(char, positioner);
     renderer.mount(target);
     renderer.render(props1);
 

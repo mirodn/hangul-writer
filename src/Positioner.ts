@@ -1,6 +1,6 @@
 import { Point } from './typings/types';
 
-// All makemeahanzi characters have the same bounding box
+// All character data shares the same 1024-unit bounding box (y axis pointing up)
 const CHARACTER_BOUNDS = [
   { x: 0, y: -124 },
   { x: 1024, y: 900 },

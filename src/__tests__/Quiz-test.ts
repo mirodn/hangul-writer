@@ -1,7 +1,7 @@
 jest.mock('../strokeMatches');
 jest.mock('../Positioner');
 
-import ren from 'hanzi-writer-data/人.json';
+import siot from '../hangul/data/siot';
 import Quiz from '../Quiz';
 import parseCharData from '../parseCharData';
 import RenderState from '../RenderState';
@@ -20,7 +20,7 @@ beforeEach(() => {
   (Positioner as any).mockClear();
 });
 
-const char = parseCharData('人', ren);
+const char = parseCharData('ㅅ', siot);
 const opts: any = {
   onLoadCharDataError: null,
   onLoadCharDataSuccess: null,
@@ -370,7 +370,7 @@ describe('Quiz', () => {
       expect(quiz._currentStrokeIndex).toBe(1);
       expect(onCorrectStroke).toHaveBeenCalledTimes(1);
       expect(onCorrectStroke).toHaveBeenCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 0,
         strokeNum: 0,
         strokesRemaining: 1,
@@ -435,7 +435,7 @@ describe('Quiz', () => {
       expect(quiz._currentStrokeIndex).toBe(1);
       expect(onCorrectStroke).toHaveBeenCalledTimes(1);
       expect(onCorrectStroke).toHaveBeenCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 0,
         strokeNum: 0,
         strokesRemaining: 1,
@@ -500,7 +500,7 @@ describe('Quiz', () => {
       expect(quiz._currentStrokeIndex).toBe(0);
       expect(onMistake).toHaveBeenCalledTimes(1);
       expect(onMistake).toHaveBeenCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 1,
         strokeNum: 0,
         strokesRemaining: 2,
@@ -598,7 +598,7 @@ describe('Quiz', () => {
       expect(quiz._currentStrokeIndex).toBe(0);
       expect(onMistake).toHaveBeenCalledTimes(1);
       expect(onMistake).toHaveBeenCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 1,
         strokeNum: 0,
         strokesRemaining: 2,
@@ -670,7 +670,7 @@ describe('Quiz', () => {
       expect(quiz._currentStrokeIndex).toBe(0);
       expect(onMistake).toHaveBeenCalledTimes(2);
       expect(onMistake).toHaveBeenLastCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 2,
         strokeNum: 0,
         strokesRemaining: 2,
@@ -747,7 +747,7 @@ describe('Quiz', () => {
       expect(quiz._currentStrokeIndex).toBe(1);
       expect(onMistake).toHaveBeenCalledTimes(1);
       expect(onMistake).toHaveBeenLastCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 1,
         strokeNum: 0,
         strokesRemaining: 2,
@@ -763,7 +763,7 @@ describe('Quiz', () => {
       });
       expect(onCorrectStroke).toHaveBeenCalledTimes(1);
       expect(onCorrectStroke).toHaveBeenLastCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 1,
         strokeNum: 0,
         strokesRemaining: 1,
@@ -866,7 +866,7 @@ describe('Quiz', () => {
       expect(quiz._isActive).toBe(false);
       expect(onCorrectStroke).toHaveBeenCalledTimes(2);
       expect(onCorrectStroke).toHaveBeenLastCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 0,
         strokeNum: 1,
         strokesRemaining: 0,
@@ -882,7 +882,7 @@ describe('Quiz', () => {
       });
       expect(onComplete).toHaveBeenCalledTimes(1);
       expect(onComplete).toHaveBeenLastCalledWith({
-        character: '人',
+        character: 'ㅅ',
         totalMistakes: 0,
       });
       expect(onMistake).not.toHaveBeenCalled();
@@ -927,7 +927,7 @@ describe('Quiz', () => {
       await resolvePromises();
       expect(onCorrectStroke).toHaveBeenCalledTimes(1);
       expect(onCorrectStroke).toHaveBeenLastCalledWith({
-        character: '人',
+        character: 'ㅅ',
         mistakesOnStroke: 0,
         strokeNum: 0,
         strokesRemaining: 1,

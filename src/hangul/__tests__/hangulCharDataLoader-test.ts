@@ -1,5 +1,7 @@
-import { create, composeSyllable, hangulCharDataLoader, hangulCharData } from '..';
-import HanziWriter from '../../HanziWriter';
+import hangulCharDataLoader from '../hangulCharDataLoader';
+import hangulCharData from '../data';
+import { composeSyllable } from '../syllable';
+import HangulWriter from '../../HangulWriter';
 import { resolvePromises } from '../../testUtils';
 
 describe('hangulCharDataLoader', () => {
@@ -26,13 +28,13 @@ describe('hangulCharDataLoader', () => {
   });
 });
 
-describe('create', () => {
+describe('HangulWriter with the default loader', () => {
   beforeEach(() => {
     document.body.innerHTML = '<div id="target"></div>';
   });
 
   /** Draws a stroke given in character coordinates, as a user would on screen. */
-  const drawStroke = (writer: HanziWriter, corners: number[][]) => {
+  const drawStroke = (writer: HangulWriter, corners: number[][]) => {
     const positioner = writer._positioner!;
     const toExternal = ([x, y]: number[]) => ({
       x: x * positioner.scale + positioner.xOffset,
@@ -56,7 +58,7 @@ describe('create', () => {
   ];
 
   it('renders ㄱ using the bundled Hangul data', async () => {
-    const writer = create('target', 'ㄱ', { width: 300, height: 300 });
+    const writer = HangulWriter.create('target', 'ㄱ', { width: 300, height: 300 });
     const character = await writer.getCharacterData();
     expect(character.symbol).toBe('ㄱ');
     expect(character.strokes.length).toBe(1);
@@ -67,7 +69,7 @@ describe('create', () => {
     const onCorrectStroke = jest.fn();
     const onMistake = jest.fn();
     const onComplete = jest.fn();
-    const writer = create('target', 'ㄱ', { width: 300, height: 300 });
+    const writer = HangulWriter.create('target', 'ㄱ', { width: 300, height: 300 });
     writer.quiz({ onCorrectStroke, onMistake, onComplete });
     await resolvePromises();
 
@@ -83,7 +85,7 @@ describe('create', () => {
   it('reports a backwards mistake, then completes on a correct retry', async () => {
     const onMistake = jest.fn();
     const onComplete = jest.fn();
-    const writer = create('target', 'ㄱ', { width: 300, height: 300 });
+    const writer = HangulWriter.create('target', 'ㄱ', { width: 300, height: 300 });
     writer.quiz({ onMistake, onComplete });
     await resolvePromises();
 
@@ -104,7 +106,7 @@ describe('create', () => {
   it('completes ㅂ when its four strokes are drawn in order', async () => {
     const onMistake = jest.fn();
     const onComplete = jest.fn();
-    const writer = create('target', 'ㅂ', { width: 300, height: 300 });
+    const writer = HangulWriter.create('target', 'ㅂ', { width: 300, height: 300 });
     writer.quiz({ onMistake, onComplete });
     await resolvePromises();
 
@@ -116,7 +118,7 @@ describe('create', () => {
 
   it('counts a stroke drawn out of order as a mistake', async () => {
     const onMistake = jest.fn();
-    const writer = create('target', 'ㅂ', { width: 300, height: 300 });
+    const writer = HangulWriter.create('target', 'ㅂ', { width: 300, height: 300 });
     writer.quiz({ onMistake });
     await resolvePromises();
 
@@ -131,7 +133,7 @@ describe('create', () => {
   it('completes a composed syllable (한) drawn stroke by stroke', async () => {
     const onMistake = jest.fn();
     const onComplete = jest.fn();
-    const writer = create('target', '한', { width: 300, height: 300 });
+    const writer = HangulWriter.create('target', '한', { width: 300, height: 300 });
     writer.quiz({ onMistake, onComplete });
     await resolvePromises();
 

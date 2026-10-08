@@ -3,7 +3,7 @@ import { CharacterJson } from '../../typings/types';
 /**
  * Helpers for authoring Hangul character data from stroke centrelines (medians) alone.
  *
- * All coordinates use the makemeahanzi space that the engine expects: a 1024-unit box
+ * All coordinates use the engine's character space: a 1024-unit box
  * spanning x 0..1024 and y -124..900, with the y axis pointing UP.
  * A median lists a stroke's centreline points in drawing order.
  */
@@ -76,7 +76,7 @@ export function outlineFromMedian(median: Median, strokeWidth = DEFAULT_STROKE_W
 /**
  * Inserts evenly spaced points so no two consecutive median points are further apart
  * than `maxSpacing`. Stroke matching measures distances to median *points*, and its
- * thresholds are tuned to makemeahanzi medians (typically 50–100 units apart).
+ * thresholds were tuned on data whose median points are typically 50–100 units apart.
  */
 export function densifyMedian(median: Median, maxSpacing = MAX_MEDIAN_SPACING): Median {
   const dense = [median[0]];

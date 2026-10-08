@@ -1,8 +1,8 @@
-import { HanziWriterOptions } from './typings/types';
-import defaultCharDataLoader from './defaultCharDataLoader';
+import { HangulWriterOptions } from './typings/types';
+import hangulCharDataLoader from './hangul/hangulCharDataLoader';
 
-const defaultOptions: HanziWriterOptions = {
-  charDataLoader: defaultCharDataLoader,
+const defaultOptions: HangulWriterOptions = {
+  charDataLoader: hangulCharDataLoader,
   onLoadCharDataError: null,
   onLoadCharDataSuccess: null,
   showOutline: true,

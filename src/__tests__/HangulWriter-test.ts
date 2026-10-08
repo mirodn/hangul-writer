@@ -1,19 +1,19 @@
 jest.mock('../Quiz');
 
 const oldGlobal = { test: 'object' };
-(global as any).HanziWriter = oldGlobal;
+(global as any).HangulWriter = oldGlobal;
 
-import ren from 'hanzi-writer-data/人.json';
-import yi from 'hanzi-writer-data/一.json';
-import HanziWriter from '../HanziWriter';
+import siot from '../hangul/data/siot';
+import eu from '../hangul/data/eu';
+import HangulWriter from '../HangulWriter';
 import { timeout } from '../utils';
 import { resolvePromises } from '../testUtils';
 import Quiz from '../Quiz';
 import parseCharData from '../parseCharData';
 
-const charDataLoader = () => ren;
+const charDataLoader = () => siot;
 
-describe('HanziWriter', () => {
+describe('HangulWriter', () => {
   beforeEach(() => {
     (Quiz as any).mockClear();
   });
@@ -22,8 +22,8 @@ describe('HanziWriter', () => {
     it('can optionally run init() if element and options are passed in', async () => {
       document.body.innerHTML = '<div id="target"></div>';
 
-      const writer = new HanziWriter('target', { charDataLoader });
-      await writer.setCharacter('人');
+      const writer = new HangulWriter('target', { charDataLoader });
+      await writer.setCharacter('ㅅ');
 
       expect(document.querySelectorAll('#target svg').length).toBe(1);
       const svg = document.querySelector('#target svg')!;
@@ -42,7 +42,7 @@ describe('HanziWriter', () => {
     it('[deprecated] loads data and builds an instance in a dom element', async () => {
       document.body.innerHTML = '<div id="target"></div>';
 
-      const writer = HanziWriter.create('target', '人', { charDataLoader });
+      const writer = HangulWriter.create('target', 'ㅅ', { charDataLoader });
 
       await writer._withDataPromise;
 
@@ -61,11 +61,11 @@ describe('HanziWriter', () => {
     });
   });
 
-  describe('HanziWriter.create', () => {
+  describe('HangulWriter.create', () => {
     it('loads data and builds an instance in a dom element', async () => {
       document.body.innerHTML = '<div id="target"></div>';
 
-      const writer = HanziWriter.create('target', '人', { charDataLoader });
+      const writer = HangulWriter.create('target', 'ㅅ', { charDataLoader });
 
       await writer._withDataPromise;
 
@@ -86,14 +86,14 @@ describe('HanziWriter', () => {
     it("Errors if the target element can't be found", () => {
       document.body.innerHTML = '<div id="target"></div>';
       expect(() => {
-        HanziWriter.create('wrong-target', '人', { charDataLoader });
-      }).toThrow('HanziWriter target element not found: wrong-target');
+        HangulWriter.create('wrong-target', 'ㅅ', { charDataLoader });
+      }).toThrow('HangulWriter target element not found: wrong-target');
     });
 
     it('can optionally use a canvas for rendering instead of SVG', async () => {
       document.body.innerHTML = '<div id="target"></div>';
 
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader,
         renderer: 'canvas',
       });
@@ -111,7 +111,7 @@ describe('HanziWriter', () => {
       document.body.innerHTML = '<div id="target"></div>';
 
       const onLoadCharDataError = jest.fn();
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         onLoadCharDataError,
         charDataLoader: () => Promise.reject('reasons'),
       });
@@ -126,7 +126,7 @@ describe('HanziWriter', () => {
       document.body.innerHTML = '<div id="target"></div>';
 
       const onLoadCharDataError = jest.fn();
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         onLoadCharDataError,
         charDataLoader: (char, onComplete, onErr) => {
           onErr('reasons');
@@ -143,7 +143,7 @@ describe('HanziWriter', () => {
     it('throws an error on loading fauire if onLoadCharDataError is not provided', async () => {
       document.body.innerHTML = '<div id="target"></div>';
 
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader: (char, onComplete, onErr) => {
           onErr(new Error('reasons'));
         },
@@ -156,13 +156,13 @@ describe('HanziWriter', () => {
   describe('updateDimensions', () => {
     it('resizes the SVG target', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader,
         width: 200,
         height: 200,
         padding: 10,
       });
-      await writer.setCharacter('人');
+      await writer.setCharacter('ㅅ');
       writer.updateDimensions({ width: 300, height: 350, padding: 20 });
       expect(document.querySelector('#target svg')?.attributes['width'].value).toBe(
         '300',
@@ -177,7 +177,7 @@ describe('HanziWriter', () => {
 
     it('resizes the target when using canvas', () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader,
         width: 200,
         height: 200,
@@ -195,13 +195,13 @@ describe('HanziWriter', () => {
 
     it('updates the positioner for the active quiz, if it exists', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader,
         width: 200,
         height: 200,
         padding: 10,
       });
-      await writer.setCharacter('人');
+      await writer.setCharacter('ㅅ');
       writer.quiz();
       await resolvePromises();
       writer.updateDimensions({ width: 300, height: 350, padding: 20 });
@@ -210,37 +210,37 @@ describe('HanziWriter', () => {
 
     it('destroys the old renderer before recreating a new resized one', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader,
         width: 200,
         height: 200,
         padding: 10,
       });
-      await writer.setCharacter('人');
-      const originalRenderer = writer._hanziWriterRenderer;
-      const destroyRendererSpy = jest.spyOn(writer._hanziWriterRenderer!, 'destroy');
+      await writer.setCharacter('ㅅ');
+      const originalRenderer = writer._hangulWriterRenderer;
+      const destroyRendererSpy = jest.spyOn(writer._hangulWriterRenderer!, 'destroy');
       writer.updateDimensions({ width: 300, height: 350, padding: 20 });
       await resolvePromises();
 
       // old renderer should be destroyed
       expect(destroyRendererSpy).toHaveBeenCalledTimes(1);
-      expect(writer._hanziWriterRenderer?._positioner).toBe(writer._positioner);
+      expect(writer._hangulWriterRenderer?._positioner).toBe(writer._positioner);
       // the renderer should be replaced
-      expect(writer._hanziWriterRenderer).not.toBe(originalRenderer);
+      expect(writer._hangulWriterRenderer).not.toBe(originalRenderer);
     });
   });
 
   describe('setCharacter', () => {
     it('deletes the current character while loading', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
-        charDataLoader: (char) => timeout(1).then(() => (char === '人' ? ren : yi)),
+      const writer = HangulWriter.create('target', 'ㅅ', {
+        charDataLoader: (char) => timeout(1).then(() => (char === 'ㅅ' ? siot : eu)),
       });
       await writer._withDataPromise;
 
       expect(document.querySelector('#target svg g')).not.toBe(null);
       expect(document.querySelector('#target svg defs *')).not.toBe(null);
-      writer.setCharacter('一');
+      writer.setCharacter('ㅡ');
       expect(document.querySelector('#target svg g')).toBe(null);
       expect(document.querySelector('#target svg defs *')).toBe(null);
 
@@ -251,13 +251,13 @@ describe('HanziWriter', () => {
 
     it('maintains the visibility of the character from the last character rendered', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
-        charDataLoader: (char) => timeout(1).then(() => (char === '人' ? ren : yi)),
+      const writer = HangulWriter.create('target', 'ㅅ', {
+        charDataLoader: (char) => timeout(1).then(() => (char === 'ㅅ' ? siot : eu)),
       });
       await writer._withDataPromise;
 
       writer.hideOutline();
-      writer.setCharacter('一');
+      writer.setCharacter('ㅡ');
       await writer._withDataPromise;
       expect(writer._renderState!.state.character.main.opacity).toBe(1);
       expect(writer._renderState!.state.character.outline.opacity).toBe(0);
@@ -265,13 +265,13 @@ describe('HanziWriter', () => {
 
     it('maintains the visibility of the outline from the last character rendered', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
-        charDataLoader: (char) => timeout(1).then(() => (char === '人' ? ren : yi)),
+      const writer = HangulWriter.create('target', 'ㅅ', {
+        charDataLoader: (char) => timeout(1).then(() => (char === 'ㅅ' ? siot : eu)),
       });
       await writer._withDataPromise;
 
       writer.hideCharacter();
-      writer.setCharacter('一');
+      writer.setCharacter('ㅡ');
       await writer._withDataPromise;
       expect(writer._renderState!.state.character.main.opacity).toBe(0);
       expect(writer._renderState!.state.character.outline.opacity).toBe(1);
@@ -279,14 +279,14 @@ describe('HanziWriter', () => {
 
     it('maintains colors from the last character rendered', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
-        charDataLoader: (char) => timeout(1).then(() => (char === '人' ? ren : yi)),
+      const writer = HangulWriter.create('target', 'ㅅ', {
+        charDataLoader: (char) => timeout(1).then(() => (char === 'ㅅ' ? siot : eu)),
       });
       await writer._withDataPromise;
 
       writer.updateColor('strokeColor', 'rgba(30, 30, 30, 0.8)');
       writer.updateColor('outlineColor', 'rgba(10, 20, 30, 0.1)');
-      writer.setCharacter('一');
+      writer.setCharacter('ㅡ');
       await writer._withDataPromise;
       expect(writer._renderState!.state.options.strokeColor).toEqual({
         r: 30,
@@ -305,24 +305,24 @@ describe('HanziWriter', () => {
 
   describe('getCharacterData', () => {
     it('returns a promise with the loaded character', async () => {
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader,
       });
       const character = await writer.getCharacterData();
-      expect(character).toEqual(parseCharData('人', ren));
+      expect(character).toEqual(parseCharData('ㅅ', siot));
     });
 
     it('returns a promise with the loaded character after initial loading is done', async () => {
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader,
       });
       await writer._withDataPromise;
       const character = await writer.getCharacterData();
-      expect(character).toEqual(parseCharData('人', ren));
+      expect(character).toEqual(parseCharData('ㅅ', siot));
     });
 
     it('errors if no character has been set yet', async () => {
-      const writer = new HanziWriter('target', {
+      const writer = new HangulWriter('target', {
         charDataLoader,
       });
       await expect(writer.getCharacterData()).rejects.toThrow(
@@ -331,7 +331,7 @@ describe('HanziWriter', () => {
     });
 
     it('errors if loading fails', async () => {
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader: async () => {
           throw new Error('omg!');
         },
@@ -341,7 +341,7 @@ describe('HanziWriter', () => {
     });
 
     it('errors if loading fails before this method is called', async () => {
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         charDataLoader: async () => {
           throw new Error('omg!');
         },
@@ -360,7 +360,7 @@ describe('HanziWriter', () => {
   describe('animateCharacter', () => {
     it('animates and returns promise that resolves when animation is finished', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -417,7 +417,7 @@ describe('HanziWriter', () => {
   describe('animateStroke', () => {
     it('animates and returns promise that resolves when animation is finished', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -456,7 +456,7 @@ describe('HanziWriter', () => {
 
     it('supports negative indices', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -495,7 +495,7 @@ describe('HanziWriter', () => {
 
     it('keeps other stroke opacities where they were originally', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -541,7 +541,7 @@ describe('HanziWriter', () => {
   describe('pauseAnimation and resumeAnimation', () => {
     it('pauses and resumes the currently running animations', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -609,7 +609,7 @@ describe('HanziWriter', () => {
   describe('highlightStroke', () => {
     it('highlights a single stroke', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -660,7 +660,7 @@ describe('HanziWriter', () => {
 
     it('works with negative indices', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -711,7 +711,7 @@ describe('HanziWriter', () => {
 
     it("doesn't freeze and leave the highlight showing if another highlight happens before the first finishes", async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -751,7 +751,7 @@ describe('HanziWriter', () => {
   describe('loopCharacterAnimation', () => {
     it('animates and then repeats until something else stops it', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         showCharacter: true,
         charDataLoader,
       });
@@ -828,7 +828,7 @@ describe('HanziWriter', () => {
     describe(hideMethod, () => {
       it('animates and returns promise that resolves when finished', async () => {
         document.body.innerHTML = '<div id="target"></div>';
-        const writer = HanziWriter.create('target', '人', {
+        const writer = HangulWriter.create('target', 'ㅅ', {
           showCharacter: true,
           charDataLoader,
         });
@@ -861,7 +861,7 @@ describe('HanziWriter', () => {
 
       it('returns instantly if char is already hidden', async () => {
         document.body.innerHTML = '<div id="target"></div>';
-        const writer = HanziWriter.create('target', '人', {
+        const writer = HangulWriter.create('target', 'ㅅ', {
           showCharacter: false,
           showOutline: false,
           charDataLoader,
@@ -890,7 +890,7 @@ describe('HanziWriter', () => {
 
       it('resolves immediately if duration: 0 is passed', async () => {
         document.body.innerHTML = '<div id="target"></div>';
-        const writer = HanziWriter.create('target', '人', {
+        const writer = HangulWriter.create('target', 'ㅅ', {
           showCharacter: true,
           showOutline: true,
           charDataLoader,
@@ -921,7 +921,7 @@ describe('HanziWriter', () => {
     describe(showMethod, () => {
       it('animates and returns promise that resolves when finished', async () => {
         document.body.innerHTML = '<div id="target"></div>';
-        const writer = HanziWriter.create('target', '人', {
+        const writer = HangulWriter.create('target', 'ㅅ', {
           [showMethod]: false,
           charDataLoader,
         });
@@ -954,7 +954,7 @@ describe('HanziWriter', () => {
 
       it('returns instantly if already shown', async () => {
         document.body.innerHTML = '<div id="target"></div>';
-        const writer = HanziWriter.create('target', '人', {
+        const writer = HangulWriter.create('target', 'ㅅ', {
           [showMethod]: true,
           charDataLoader,
         });
@@ -982,7 +982,7 @@ describe('HanziWriter', () => {
 
       it('resolves immediately if duration: 0 is passed', async () => {
         document.body.innerHTML = '<div id="target"></div>';
-        const writer = HanziWriter.create('target', '人', {
+        const writer = HangulWriter.create('target', 'ㅅ', {
           [showMethod]: false,
           charDataLoader,
         });
@@ -1013,7 +1013,7 @@ describe('HanziWriter', () => {
   describe('updateColor', () => {
     it('animates and returns promise that resolves when finished', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         strokeColor: '#123',
         charDataLoader,
       });
@@ -1058,7 +1058,7 @@ describe('HanziWriter', () => {
 
     it('uses strokeColor for the tween if radicalColor is set to null', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         strokeColor: 'rgba(30, 30, 30, 0.8)',
         radicalColor: '#EEE',
         charDataLoader,
@@ -1107,7 +1107,7 @@ describe('HanziWriter', () => {
   describe('quiz', () => {
     it('sets up and starts the quiz', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', { charDataLoader });
+      const writer = HangulWriter.create('target', 'ㅅ', { charDataLoader });
       const onComplete = jest.fn();
       writer.quiz({ onComplete });
       expect(Quiz).not.toHaveBeenCalled();
@@ -1129,7 +1129,7 @@ describe('HanziWriter', () => {
   describe('cancelQuiz', () => {
     it('cancels the existing quiz', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', { charDataLoader });
+      const writer = HangulWriter.create('target', 'ㅅ', { charDataLoader });
       await writer._withDataPromise;
       writer.quiz();
       await resolvePromises();
@@ -1143,7 +1143,7 @@ describe('HanziWriter', () => {
   describe('skipQuizStroke', () => {
     it('returns if there is not active quiz', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', { charDataLoader });
+      const writer = HangulWriter.create('target', 'ㅅ', { charDataLoader });
       await writer._withDataPromise;
       expect(writer.skipQuizStroke()).toBe(undefined);
       expect(writer._quiz).toBe(undefined);
@@ -1151,7 +1151,7 @@ describe('HanziWriter', () => {
 
     it('skips the current stroke if a quiz is active', async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      const writer = HanziWriter.create('target', '人', { charDataLoader });
+      const writer = HangulWriter.create('target', 'ㅅ', { charDataLoader });
       writer.quiz();
       await resolvePromises();
       const quiz = writer._quiz!;
@@ -1162,10 +1162,10 @@ describe('HanziWriter', () => {
   });
 
   describe('mouse and touch events', () => {
-    let writer: HanziWriter;
+    let writer: HangulWriter;
     beforeEach(async () => {
       document.body.innerHTML = '<div id="target"></div>';
-      writer = HanziWriter.create('target', '人', { charDataLoader });
+      writer = HangulWriter.create('target', 'ㅅ', { charDataLoader });
       await writer._withDataPromise;
       writer.quiz();
       await resolvePromises();
@@ -1257,7 +1257,7 @@ describe('HanziWriter', () => {
   describe('loadCharacterData', () => {
     it('calls onLoadCharDataError if provided on loading failure', async () => {
       const onLoadCharDataError = jest.fn();
-      const loadingPromise = HanziWriter.loadCharacterData('人', {
+      const loadingPromise = HangulWriter.loadCharacterData('ㅅ', {
         onLoadCharDataError,
         charDataLoader: () => Promise.reject('reasons'),
       });
@@ -1269,7 +1269,7 @@ describe('HanziWriter', () => {
     });
 
     it('throws an error on loading fauire if onLoadCharDataError is not provided', async () => {
-      const loadingPromise = HanziWriter.loadCharacterData('人', {
+      const loadingPromise = HangulWriter.loadCharacterData('ㅅ', {
         charDataLoader: (_char, _onComplete, onErr) => {
           onErr(new Error('reasons'));
         },
@@ -1279,31 +1279,31 @@ describe('HanziWriter', () => {
     });
 
     it('returns the character data in a promise on success', async () => {
-      const loadingPromise = HanziWriter.loadCharacterData('人', {
-        charDataLoader: () => ren,
+      const loadingPromise = HangulWriter.loadCharacterData('ㅅ', {
+        charDataLoader: () => siot,
       });
 
       const result = await loadingPromise;
-      expect(result).toBe(ren);
+      expect(result).toBe(siot);
     });
 
     it('returns the character data in onLoadCharDataSuccess if provided', async () => {
       const onLoadCharDataSuccess = jest.fn();
-      const loadingPromise = HanziWriter.loadCharacterData('人', {
+      const loadingPromise = HangulWriter.loadCharacterData('ㅅ', {
         onLoadCharDataSuccess,
-        charDataLoader: () => ren,
+        charDataLoader: () => siot,
       });
 
       await loadingPromise;
 
       expect(onLoadCharDataSuccess.mock.calls.length).toBe(1);
-      expect(onLoadCharDataSuccess.mock.calls[0][0]).toBe(ren);
+      expect(onLoadCharDataSuccess.mock.calls[0][0]).toBe(siot);
     });
   });
 
   describe('getScalingTransform', () => {
-    it('returns an object with info that can be used for scaling a makemeahanzi character in SVG', () => {
-      expect(HanziWriter.getScalingTransform(100, 120, 10)).toEqual({
+    it('returns an object with info that can be used for scaling a character in SVG', () => {
+      expect(HangulWriter.getScalingTransform(100, 120, 10)).toEqual({
         scale: 0.078125,
         transform: 'translate(10, 90.3125) scale(0.078125, -0.078125)',
         x: 10,
@@ -1312,7 +1312,7 @@ describe('HanziWriter', () => {
     });
 
     it('uses 0 as the default padding', () => {
-      expect(HanziWriter.getScalingTransform(100, 100)).toEqual({
+      expect(HangulWriter.getScalingTransform(100, 100)).toEqual({
         scale: 0.09765625,
         transform: 'translate(0, 87.890625) scale(0.09765625, -0.09765625)',
         x: 0,
@@ -1323,7 +1323,7 @@ describe('HanziWriter', () => {
 
   describe('option defaults', () => {
     it('works with legacy strokeAnimationDuration and strokeHighlightDuration if present', () => {
-      const writer = HanziWriter.create('target', '人', {
+      const writer = HangulWriter.create('target', 'ㅅ', {
         strokeAnimationDuration: 1000,
         strokeHighlightDuration: 250,
       });
@@ -1332,12 +1332,12 @@ describe('HanziWriter', () => {
     });
 
     it('sets highlightCompleteColor to highlightColor if not explicitly set', () => {
-      const writer = HanziWriter.create('target', '人', { highlightColor: '#ABC' });
+      const writer = HangulWriter.create('target', 'ㅅ', { highlightColor: '#ABC' });
       expect(writer._options.highlightCompleteColor).toBe('#ABC');
     });
 
     it('sets highlightCompleteColor to the default highilghtColor if none is passed', () => {
-      const writer = HanziWriter.create('target', '人');
+      const writer = HangulWriter.create('target', 'ㅅ');
       expect(writer._options.highlightCompleteColor).toBe('#AAF');
     });
   });

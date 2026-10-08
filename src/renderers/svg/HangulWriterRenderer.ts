@@ -4,11 +4,11 @@ import * as svg from './svgUtils';
 import Character from '../../models/Character';
 import Positioner from '../../Positioner';
 import SVGRenderTarget from './RenderTarget';
-import HanziWriterRendererBase from '../HanziWriterRendererBase';
+import HangulWriterRendererBase from '../HangulWriterRendererBase';
 import { RenderStateObject } from '../../RenderState';
 
-export default class HanziWriterRenderer
-  implements HanziWriterRendererBase<SVGElement | SVGSVGElement, SVGRenderTarget> {
+export default class HangulWriterRenderer
+  implements HangulWriterRendererBase<SVGElement | SVGSVGElement, SVGRenderTarget> {
   _character: Character;
   _positioner: Positioner;
   _mainCharRenderer: CharacterRenderer;

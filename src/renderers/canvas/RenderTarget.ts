@@ -14,7 +14,7 @@ export default class RenderTarget extends RenderTargetBase<HTMLCanvasElement> {
     })();
 
     if (!element) {
-      throw new Error(`HanziWriter target element not found: ${elmOrId}`);
+      throw new Error(`HangulWriter target element not found: ${elmOrId}`);
     }
 
     const nodeType = element.nodeName.toUpperCase();
