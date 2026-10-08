@@ -7,7 +7,9 @@ Hangul Writer
 
 Hangul Writer is a free and open-source JavaScript library for Korean Hangul stroke order animations and handwriting practice quizzes. Learners draw a character stroke by stroke and get immediate feedback on each stroke, including wrong stroke order and strokes drawn in the wrong direction.
 
-It supports all 51 Hangul jamo and all 11,172 precomposed syllables (가–힣). It's a fork of [Hanzi Writer](https://github.com/chanind/hanzi-writer), and reuses its animation, rendering and stroke recognition engine.
+It supports all 51 Hangul jamo and all 11,172 precomposed syllables (가–힣).
+
+> **Built on Hanzi Writer.** Hangul Writer is a fork of [Hanzi Writer](https://github.com/chanind/hanzi-writer) by [David Chanin](https://github.com/chanind), and almost all of it is his work: rendering (SVG and canvas), stroke animations, the quiz flow and the stroke recognition that judges each drawn stroke. Hangul Writer adds the Korean part on top: Hangul stroke data, syllable composition and the Hangul demo. Thank you, David, for building Hanzi Writer and sharing it under an open license. If you find this project useful, please also star [Hanzi Writer](https://github.com/chanind/hanzi-writer).
 
 ## Demo
 
@@ -45,7 +47,7 @@ writer.quiz({
 
 Without a bundler, include `dist/hangul-writer.min.js` with a `<script>` tag; it defines a global `HangulWriter`.
 
-The API is the same as Hanzi Writer's, so its [documentation](https://chanind.github.io/hanzi-writer) applies; read `HanziWriter` as `HangulWriter`. Character data is bundled, so no network requests are made.
+Character data is bundled, so no network requests are made.
 
 ## Supported characters
 
@@ -101,7 +103,7 @@ Releases are automated with [semantic-release](https://github.com/semantic-relea
 |---|---|
 | `fix: …` | patch (1.0.0 → 1.0.1) |
 | `feat: …` | minor (1.0.0 → 1.1.0) |
-| `feat!: …` or a `BREAKING CHANGE:` footer | major (1.0.0 → 2.0.0) |
+| a `BREAKING CHANGE:` footer in the commit message | major (1.0.0 → 2.0.0) |
 
 Other types, such as `docs:`, `ci:` or `chore:`, don't trigger a release.
 
