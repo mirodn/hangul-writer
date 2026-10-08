@@ -8,6 +8,22 @@ import filesize from 'rollup-plugin-filesize';
 
 const extensions = ['.js', '.ts'];
 
+const createPlugins = () => [
+  filesize(),
+  ts({
+    transpiler: 'babel',
+  }),
+  resolve({ extensions }),
+  babel({
+    exclude: 'node_modules/**',
+    extensions,
+    babelHelpers: 'bundled',
+  }),
+  license({
+    banner: `Hanzi Writer v<%= pkg.version %> | https://chanind.github.io/hanzi-writer`,
+  }),
+];
+
 export default [
   {
     input: 'src/HanziWriter.ts',
@@ -39,20 +55,17 @@ export default [
         exports: 'default',
       },
     ],
-    plugins: [
-      filesize(),
-      ts({
-        transpiler: 'babel',
-      }),
-      resolve({ extensions }),
-      babel({
-        exclude: 'node_modules/**',
-        extensions,
-        babelHelpers: 'bundled',
-      }),
-      license({
-        banner: `Hanzi Writer v<%= pkg.version %> | https://chanind.github.io/hanzi-writer`,
-      }),
-    ],
+    plugins: createPlugins(),
+  },
+  {
+    // Hangul Writer: HanziWriter preconfigured with bundled Hangul character data
+    input: 'src/hangul/index.ts',
+    output: {
+      file: 'dist/hangul-writer.js',
+      format: 'iife',
+      name: 'HangulWriter',
+      exports: 'named',
+    },
+    plugins: createPlugins(),
   },
 ];
